@@ -194,5 +194,6 @@ public class cornrag : MonoBehaviour
         transform.rotation = resetRot;
         collisions.instance.hasCollided = false;
         groundhit.instance.onGroundHit = false;
+        Pointer.instance.hasCornHole = false;
     }
 }
