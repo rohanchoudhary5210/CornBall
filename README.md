@@ -664,6 +664,19 @@ public class cornrag : MonoBehaviour
         #endif
     }
 
+void DisableBag()
+{
+    // If the Rigidbody component exists...
+    if (rb != null)
+    {
+        // ...make it kinematic. This stops it from being affected by gravity or collisions.
+        rb.isKinematic = true;
+    }
+    
+    // Disable this script component so it no longer listens for input.
+    this.enabled = false;
+}
+
     // A function to handle mouse input.
     void HandleMouseInput() { /* ... Code to detect mouse clicks and drags ... */ }
     // A function to handle touch input on mobile devices.
@@ -732,14 +745,16 @@ public class cornrag : MonoBehaviour
     }
 
     // A coroutine to end the turn.
-    IEnumerator EndTurnAfterDelay() {
-        // Pause for 4 seconds.
-        yield return new WaitForSeconds(4.0f);
-        // Tell the SpawnManager to start the next turn.
-        SpawnManager.instance.StartNewTurn();
-        // Destroy this bag GameObject after 2 more seconds to clean up the scene.
-        Destroy(gameObject, 2.0f);
-    }
+    IEnumerator EndTurnAfterDelay() { 
+    // Pause for 4 seconds to let the bag settle.
+    yield return new WaitForSeconds(4.0f);
+
+    // Tell the SpawnManager to start the next turn for the next player.
+    SpawnManager.instance.StartNewTurn();
+    
+    // Disable the bag instead of destroying it.
+    DisableBag();
+}
     
     // A function to calculate the throw direction from a player's swipe.
     void CalculateDirection() { /* ... Code to convert 2D swipe to 3D direction ... */ }
