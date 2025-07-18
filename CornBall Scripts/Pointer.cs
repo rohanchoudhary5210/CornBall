@@ -20,10 +20,12 @@ public class Pointer : MonoBehaviour
             if (collisions.instance.hasCollided == true)
             {
                 GameManager.instance.score += 2;
+                GameManager.instance.coins += 20;
             }
             else
             {
                 GameManager.instance.score += 3;
+                GameManager.instance.coins += 50;
             }
             hasCornHole = true;
         }
