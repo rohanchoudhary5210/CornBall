@@ -13,10 +13,12 @@ public class groundhit : MonoBehaviour
     }
     void OnCollisionEnter(Collision collision)
     {
-        if (collisions.instance.hasCollided == true && onGroundHit==false)
+        if (collision.gameObject.CompareTag("Player") && onGroundHit == false)
         {
-            GameManager.instance.score -= 1;
+
             onGroundHit = true;
+            Debug.Log("Ground hit: " + onGroundHit);
         }
+        Debug.Log("Ground hit: "+onGroundHit);
     }
 }
