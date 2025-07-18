@@ -7,7 +7,9 @@ public class GameManager : MonoBehaviour
 {
     // Start is called before the first frame update
     public static GameManager instance;
-    public TextMeshProUGUI test;
+    public TextMeshProUGUI scoretxt,coinstxt;
+    
+    public int coins;
     public int score = 0;
     void Start()
     {
@@ -17,6 +19,7 @@ public class GameManager : MonoBehaviour
     }
     void Update()
     {
-        test.text = "Score: " + score.ToString();
+        scoretxt.text = "Score: " + score.ToString();
+        coinstxt.text = "Coins: " + coins.ToString();
     }
 }
