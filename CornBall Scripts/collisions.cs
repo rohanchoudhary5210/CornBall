@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class collisions : MonoBehaviour
 {
-public static collisions instance;
+    public static collisions instance;
     public bool hasCollided = false;
     void Start()
     {
@@ -14,11 +14,26 @@ public static collisions instance;
     }
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Player") && hasCollided==false)
+        if (hasCollided == false && collision.gameObject.CompareTag("Player"))
         {
-            Debug.Log("Collided");
-            GameManager.instance.score += 1;
             hasCollided = true;
+            StartCoroutine(HandleGroundHit());
+        }
+        Debug.Log("Board hit: "+hasCollided);
+    }
+    IEnumerator HandleGroundHit()
+    {
+        
+        yield return new WaitForSeconds(2f);
+        if (groundhit.instance.onGroundHit == true)
+        {
+            Debug.Log("Ground hit: in collisions" + groundhit.instance.onGroundHit);
+            GameManager.instance.score += 0;
+        }
+        else
+        {
+            GameManager.instance.score += 1;
+            GameManager.instance.coins += 10;
         }
     }
 }
