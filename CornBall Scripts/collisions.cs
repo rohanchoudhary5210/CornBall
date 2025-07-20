@@ -19,7 +19,6 @@ public class collisions : MonoBehaviour
             hasCollided = true;
             StartCoroutine(HandleGroundHit());
         }
-        Debug.Log("Board hit: "+hasCollided);
     }
     IEnumerator HandleGroundHit()
     {
@@ -27,7 +26,6 @@ public class collisions : MonoBehaviour
         yield return new WaitForSeconds(2f);
         if (groundhit.instance.onGroundHit == true)
         {
-            Debug.Log("Ground hit: in collisions" + groundhit.instance.onGroundHit);
             GameManager.instance.score += 0;
         }
         else
