@@ -6,8 +6,9 @@ public class cornrag : MonoBehaviour
 {
 
     [Header("New Throw Controls")]
-    public float throwForceMultiplier = 1.2f;
-    public float upwardAngle = 25f;
+     private float throwForceMultiplier = 0.1f;
+    // This new variable controls how much the vertical swipe affects the throw's height.
+    public float verticalSensitivity = 0.1f;
     public float horizontalSensitivity = 0.05f;
     // Swipe detection
     private float startTime, endTime, swipeDistance, swipeTime;
@@ -87,7 +88,6 @@ public class cornrag : MonoBehaviour
 
         if (Input.GetMouseButton(0) && holding)
         {
-            Debug.Log("Ho rha h");
             PickupBall(Input.mousePosition);
         }
 
@@ -178,6 +178,7 @@ public class cornrag : MonoBehaviour
     void HandleRelease()
     {
         swipeDistance = (endPos - startPos).magnitude;
+        Debug.Log(swipeDistance);
         swipeTime = endTime - startTime;
 
         if (swipeTime > 0 && swipeDistance >= MinSwipeDist)
@@ -192,6 +193,7 @@ public class cornrag : MonoBehaviour
 
         CalculateSpeed();
         CalculateDirection();
+        
 
         BallSpeed = Mathf.Clamp(BallSpeed, 5f, MaxBallSpeed);
         Vector3 force = throwDirection * BallSpeed;
@@ -201,25 +203,33 @@ public class cornrag : MonoBehaviour
         thrown = true;
     }
     void CalculateDirection()
-{
-    // Get the direction of the swipe on the screen
-    Vector3 swipeDirectionScreen = (endPos - startPos);
-    
-    // Create a rotation based on the horizontal swipe
-    // This rotates the camera's forward direction left or right
-    Quaternion horizontalRotation = Quaternion.AngleAxis(swipeDirectionScreen.x *horizontalSensitivity, Vector3.up);
+    {
+        // Get the direction and distance of the swipe on the screen.
+        Vector3 swipeDirectionScreen = (endPos - startPos);
+        
+        // --- Horizontal Aim (Same as before) ---
+        // Create a rotation based on the horizontal part of the swipe.
+        Quaternion horizontalRotation = Quaternion.AngleAxis(swipeDirectionScreen.x * horizontalSensitivity, Vector3.up);
 
-    // Get the base forward direction from the camera
-    Vector3 forwardDirection = Camera.main.transform.forward;
-    forwardDirection.y = 0; // Keep it flat initially
-    
-    // Combine the base forward direction with the horizontal rotation
-    Vector3 finalDirection = horizontalRotation * forwardDirection.normalized;
+        // Get the camera's forward direction and flatten it.
+        Vector3 forwardDirection = Camera.main.transform.forward;
+        forwardDirection.y = 0; 
+        
+        // Apply the horizontal rotation to get our final left/right aim.
+        Vector3 finalDirection = horizontalRotation * forwardDirection.normalized;
 
-    // Now, apply the fixed upward angle to the final direction
-    // This gives a consistent arc to every throw
-    throwDirection = Quaternion.AngleAxis(-upwardAngle, Camera.main.transform.right) * finalDirection;
-}
+        // --- NEW: Vertical Aim based on swipe distance ---
+        // Use the 'y' component of the swipe to determine the upward angle.
+        // A longer swipe up results in a higher angle.
+        float upwardAngle = swipeDirectionScreen.y * verticalSensitivity;
+
+        // Clamp the angle to prevent unrealistic throws (e.g., throwing backwards or straight down).
+        // This ensures the angle is always between 10 and 45 degrees.
+        upwardAngle = Mathf.Clamp(upwardAngle, 10f, 30f);
+
+        // Apply the NEW player-controlled upward angle to the final direction.
+        throwDirection = Quaternion.AngleAxis(-upwardAngle, Camera.main.transform.right) * finalDirection;
+    }
 
 void CalculateSpeed()
 {
