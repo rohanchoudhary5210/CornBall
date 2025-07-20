@@ -17,8 +17,6 @@ public class groundhit : MonoBehaviour
         {
 
             onGroundHit = true;
-            Debug.Log("Ground hit: " + onGroundHit);
         }
-        Debug.Log("Ground hit: "+onGroundHit);
     }
 }
